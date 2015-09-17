@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <title>Web Components -- Custom Elements</title>
+    <link rel='import' href='avatar.html' />
+    <style>
+      body {
+        align-items: center;
+        display: flex;
+      }
+
+      .avatars {
+        justify-content: space-between;
+        display: flex;
+        flex-direction: row;
+        margin: auto;
+        width: 50%;
+      }
+
+      img {
+        border: 2px solid blue;
+      }
+
+      wc-avatar {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      wc-avatar .quote {
+        font-size: 18px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="avatars">
+      <wc-avatar from='twitter' username='tritonrc'></wc-avatar>
+      <wc-avatar from='twitter' username='workday'></wc-avatar>
+      <div is="wc-avatar"></div>
+    </div>
+  </body>
+</html>

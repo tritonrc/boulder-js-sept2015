@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>Web Components -- Templates</title>
+    <style>
+      body {
+        align-items: center;
+        display: flex;
+      }
+
+      table {
+        border: 2px solid black;
+        font-size: 24px;
+        margin: auto;
+        width: 50%;
+      }
+
+      thead {
+        background-color: #00BCD4;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Color</td>
+          <td>Fitz?</td>
+        </tr>
+      </thead>
+      <tbody>
+        <template id='tmpl'>
+          <tr>
+            <td class='name'></td>
+            <td class='color'></td>
+            <td class='fitz'></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+    <script>
+      (function() {
+        'use strict'
+        const cats = [
+          { name: 'Mr. Bojangles', color: 'bi-color', fitz: true },
+          { name: 'Morris', color: 'tabby', fitz: false }
+        ]
+
+        const template = document.querySelector('#tmpl')
+
+        for(let cat of cats) {
+          const clone = template.content.cloneNode(true)
+          clone.querySelector('.name').textContent = cat.name
+          clone.querySelector('.color').textContent = cat.color
+          clone.querySelector('.fitz').textContent = cat.fitz
+          template.parentNode.insertBefore(clone, template)
+        }
+      })()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+# Mac
+.DS_Store
+
+# Vim
+*.un~
+*.swp
+
+# NPM
+node_modules
+npm_debug.log

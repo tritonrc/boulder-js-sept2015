@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Web Components -- An abbreviated introduction</title>
+
+		<meta name="description" content="Lessons learned while using Web Components as an integration strategy">
+		<meta name="author" content="Brian McKinney">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section data-background="http://www.wired.com/images_blogs/rawfile/2013/09/BeautifulLEGO_021-MCVEIGH.png" >
+					<h1 style='background-color: rgba(232, 91, 138, 0.75); text-shadow: none'>Web Components</h1>
+					<h4 style='background-color: rgba(232, 91, 138, 0.75); text-shadow: none'>A quick overview</h3>
+					<p style='background-color: rgba(232, 91, 138, 0.75);'>
+						<a style='color: white' href="http://github.com/tritonrc">Brian McKinney</a> /
+						<a style='color: white' href="http://twitter.com/tritonrc">@tritonrc</a> /
+						<a style='color: white' href="mailto:brian.mckinney@workday.com">brian.mckinney@workday.com</a>
+					</p>
+					<aside class="notes">
+						I want to thank QuickLeft for generously hosting the Boulder JavaScript Meetup along with Chris and Sean for organizing the event.
+						Also I would like to thank the two prior presenters as well for keeping the crowd warm.
+					</aside>
+				</section>
+
+				<section>
+					<h2>About me</h2>
+					<p>
+						I am a Software Development Engineering Manager at Workday's new Boulder Office
+					</p>
+					<p>
+						I spent the prior two years working for a local startup called GridCraft designing
+						and implementing an Angular.js 1.x SPA
+					</p>
+					<p>
+						In the past 10 years, I've worked for startups to large companies on everything
+					  from hardware design to SPAs and everything in between
+					</p>
+				</section>
+
+				<section>
+					<h2>How did I get here?</h2>
+					<p>
+						After Workday acquired GridCraft at the beginning of summer, we set to work on integrating
+						GridCraft's technology into Workday's larger platform.
+					</p>
+					<p>
+						The SVP of UX at Workday came to me in early May and said "Brian, how do we integrate now and looking forward?"
+					</p>
+				</section>
+
+				<section style='text-align: right' data-background="http://gif-finder.com/wp-content/uploads/2014/10/Agent-Smith-Evil-Laugh.gif">
+					<h2 class="fragment">Web Components</h2>
+					<h3 class="fragment">Trust me</h3>
+					<h4 class="fragment">(Its like the blue pill)</h3>
+				</section>
+
+				<section>
+					<h2>Why Web Components?</h2>
+					<ul>
+						<li>Resource Bundling</li>
+						<li>Encapsulation</li>
+						<li>DOM &amp; CSS Scoping</li>
+						<li>&ast;Plays well with tools and frameworks we already use&ast;</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Four Specs of the Comp-ocalypse</h2>
+					<p>"Web Components" is the umbrella term for the following four specifications:</p>
+					<ul>
+						<li>Templates</li>
+						<li>HTML Imports</li>
+						<li>Custom Elements</li>
+						<li>Shadow DOM</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Templates</h2>
+						<p>
+							Declare inert DOM subtrees in HTML and manipulate them to instantiate document fragments with identical contents.
+						</p>
+						<p data-markdown>
+							<script type="text/template">
+								```html
+									<template id='potion'>
+										<p class='.clone'>Clone me!</p>
+									</template>
+								```
+							</script>
+						</p>
+						<p>
+							<em>&lt;template&gt;</em> elements have a <em>content</em> property which is a
+							 <em style='white-space: no-break;'>#document-fragment</em> of the enclosed HTML.
+						</p>
+						<aside class="notes">
+						</aside>
+					</section>
+					<section>
+						<h2>Inert?</h2>
+						<p>
+							The DOM inside of the template itself cannot be "seen" by the surrounding document.
+							Running <pre>document.querySelector('.clone')</pre> or <pre>templateElement.querySelector('.clone')</pre>
+							on the above will not return the enclosed paragraph
+						</p>
+						<p>
+							Only the content of the cloned or imported fragments would be visible to the document.
+						</p>
+					</section>
+					<section>
+						<h2>Using Templates</h2>
+						<p data-markdown>
+							<script type="text/template">
+```html
+<template id='tmpl'>
+  <tr>
+    <td class='name'></td>
+    <td class='color'></td>
+    <td class='fitz'></td>
+  </tr>
+</template>
+```
+```javascript
+const cats = [
+	{ name: 'Mr. Bojangles', color: 'black', fitz: true },
+	{ name: 'Morris', color: 'tabby', fitz: false }
+
+const template = document.querySelector('#tmpl')
+
+for(let cat of cats) {
+	const clone = template.content.cloneNode(true)
+	clone.querySelector('.name').textContent = cat.name
+	clone.querySelector('.color').textContent = cat.color
+	clone.querySelector('.fitz').textContent = cat.fitz
+	template.parentNode.insertBefore(clone, template)
+}
+```
+							</script>
+						</p>
+					</section>
+					<section>
+						<h2>cloneNode vs. importNode</h2>
+						<h3>Straight from the specification</h3>
+						<blockquote>
+							The only difference between cloneNode() and importNode() is when the node document is updated:
+							with cloneNode() it is updated when the nodes are appended with appendChild(),
+							 with document.importNode() it is updated when the nodes are cloned.
+						</blockquote>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>HTML Imports</h2>
+						<p>
+							HTML Imports are a way to include and reuse HTML document in other documents.
+						</p>
+						<p data-markdown>
+							<script type="text/template">
+								```html
+									<link rel='import' href='/trade.html'/>
+								```
+							</script>
+						</p>
+						<p>
+							The <em>rel='import'</em> indicates that the user-agent should load the resource
+							as another HTML document.  The imported #document is available via the <em>import</em> property
+							of the &lt;link&gt; element.
+						</p>
+						<p data-markdown>
+							<script type="text/template">
+```javascript
+const importElement = document.querySelector('link[rel="import"]')
+const importedDocument = importElement.import
+```
+							</script>
+						</p>
+					</section>
+					<section>
+						<h2>Import semantics</h2>
+						<p>
+							The link element fires a simple event called <em>load</em> for successful loading attempt.
+							For failed attempt, it fires a simple event named <em>error</em>.
+						</p>
+						<p>
+							As an import delays the load event, the Document isn't completely loaded
+							until loading attempts of all of its linked imports are finished.
+						</p>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Custom Elements</h2>
+						<p>
+							Define and use new types of DOM elements in a document.
+						</p>
+						<p data-markdown>
+							<script type="text/template">
+```html
+<wc-avatar from='twitter' id='tritonrc'></wc-avatar>
+```
+							</script>
+						</p>
+						<img src="https://pbs.twimg.com/profile_images/222828670/n902960625_3605547_9275_bigger.jpg"/>
+					</section>
+					<section>
+						<h2>Custom Elements: step one</h2>
+						<p>Set the <em>[[Prototype]]</em> of your object to `HTMLElement` (or 'SVGElement')</p>
+						<p data-markdown>
+							<script type="text/template">
+```javascript
+Object.setPrototypeOf(MyElement, HTMLElement.prototype)
+```
+							</script>
+						</p>
+					</section>
+					<section>
+						<h2>Custom Elements: step two</h2>
+						<p>Implement the necessary lifecycle methods:</p>
+						<ul>
+							<li><em>createdCallback</em> &mdash;  Created and definition is registered.</li>
+							<li><em>attachedCallback</em> &mdash; Inserted into a document and this document has a browsing context.</li>
+							<li><em>detachedCallback</em> &mdash; Removed from a document and this document has a browsing context.</li>
+							<li><em>attributeChangedCallback</em> &mdash; Attribute is added, changed or removed</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Custom Elements: step three</h2>
+						<p>Call <em>document.registerElement</em> with the tag name (Must have at least one <strong>dash</strong>) and registration options</p>
+						<p data-markdown>
+							<script type="text/template">
+```javascript
+var elementConstructor =
+	document.registerElement('my-element', {
+		prototype: MyElement.prototype
+	})
+```
+							</script>
+						</p>
+					</section>
+					<section>
+						<h2>Custom Elements: extra credit</h2>
+						<ul>
+							<li class="fragment">Methods and Events</li>
+							<li class="fragment">The `:unresolved` pseudoclass can be used to mitigate the FOUC issues with custom elements</li>
+							<li class="fragment">Type extensions</li>
+							<li class="fragment">Updating/reloading custom elements...</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section data-background="https://s-media-cache-ak0.pinimg.com/736x/77/cf/fb/77cffb6a6a3c3815f65e86ae336cb189.jpg">
+						<h2 style="background-color: rgba(0,0,0,0.75)">Shadow DOM</h2>
+						<p style="background-color: rgba(0,0,0,0.75)">
+							Establish and maintain functional boundaries between DOM trees and how these DOM trees interact with
+							each other with a document, thus enabling better functional encapsulation
+						</p>
+						<p data-markdown>
+							<script type="text/template">
+```javascript
+const shady = this.createShadowRoot()
+```
+							</script>
+						</p>
+					</section>
+					<section>
+						<h2>Shadow DOM: From the spec</h2>
+						<ul>
+							<li>CSS on outside doesn't bleed through into shadow-root and vice-versa (can use special selectors)</li>
+						</ul>
+						<p>
+						<pre>
+interface ShadowRoot : DocumentFragment {
+    Selection?        getSelection ();
+    Element?          elementFromPoint (double x, double y);
+    sequence<Element> elementsFromPoint (double x, double y);
+    CaretPosition?    caretPositionFromPoint (double x, double y);
+    readonly    attribute Element?       activeElement;
+    readonly    attribute Element        host;
+    [TreatNullAs=EmptyString]
+                attribute DOMString      innerHTML;
+    readonly    attribute StyleSheetList styleSheets;
+};
+						</pre>
+						</p>
+					</section>
+					<section>
+						<h2>Shadow DOM: gotchas</h2>
+						<ul>
+							<li class="fragment">Style within the Shadow Root (using link)</li>
+							<li class="fragment">Event retargeting and <em>Event#path</em></li>
+							<li class="fragment">Many libraries don't know Shadow</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<h2>Where are we today?</h2>
+					<ul>
+						<li class="fragment">Native support</li>
+						<li class="fragment">Web Components vs. what we use today </li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Thank you!</h2>
+					<p>Questions?</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "boulder-js-sept2015",
+  "version": "1.0.0",
+  "description": "Example code for talk at September 2015 Boulder JS Meetup",
+  "main": "index.js",
+  "scripts": {
+    "dev-server": "node_modules/.bin/webpack-dev-server --config webpack.config.js --progress --colors --inline --host 0.0.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tritonrc/boulder-js-sept2015.git"
+  },
+  "author": "Brian McKinney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tritonrc/boulder-js-sept2015/issues"
+  },
+  "homepage": "https://github.com/tritonrc/boulder-js-sept2015#readme",
+  "devDependencies": {
+    "babel-core": "^5.8.24",
+    "babel-loader": "^5.3.2",
+    "less": "^2.5.1",
+    "less-loader": "^2.2.0",
+    "webpack": "^1.12.1",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.24"
+  }
+}

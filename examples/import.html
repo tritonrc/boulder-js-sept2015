@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>Web Components -- Imports</title>
+    <link rel='import' href='kittens.html' />
+    <style>
+      body {
+        align-items: center;
+        display: flex;
+      }
+
+      #kitten {
+        font-size: 24px;
+        margin: auto;
+        text-align: center;
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      (function() {
+        'use strict'
+        console.log('Master document script block executing', document.currentScript)
+        const importElement = document.querySelector('link[rel="import"]')
+        const kittensDocument = importElement.import
+        const kittenDiv = kittensDocument.querySelector('#kitten')
+        console.log('Is the kitten div part of the master document?', kittenDiv.ownerDocument == document)
+        // Note we have to use importNode() here!
+        document.querySelector('body').appendChild(document.importNode(kittenDiv, true))
+      })()
+    </script>
+  </body>
+</html>
